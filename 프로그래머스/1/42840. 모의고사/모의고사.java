@@ -1,21 +1,22 @@
 import java.util.*;
 
 class Solution {
+    private static final int[] STUDENT1_PATTERN = {1, 2, 3, 4, 5};
+    private static final int[] STUDENT2_PATTERN = {2, 1, 2, 3, 2, 4, 2, 5};
+    private static final int[] STUDENT3_PATTERN = {3, 3, 1, 1, 2, 2, 4, 4, 5, 5};
+
+    
     public int[] solution(int[] answers) {
-        int[] student1Answers = {1,2,3,4,5};
-        int[] student2Answers = {2,1,2,3,2,4,2,5};
-        int[] student3Answers = {3,3,1,1,2,2,4,4,5,5};
-        
         int[] scores = new int[3];
         
         for(int i=0; i<answers.length; i++){
-            if(student1Answers[i%student1Answers.length] == answers[i]){
+            if(STUDENT1_PATTERN[i%STUDENT1_PATTERN.length] == answers[i]){
                 scores[0]++;
             }
-            if(student2Answers[i%student2Answers.length] == answers[i]){
+            if(STUDENT2_PATTERN[i%STUDENT2_PATTERN.length] == answers[i]){
                 scores[1]++;
             }
-            if(student3Answers[i%student3Answers.length] == answers[i]){
+            if(STUDENT3_PATTERN[i%STUDENT3_PATTERN.length] == answers[i]){
                 scores[2]++;
             }
         }
