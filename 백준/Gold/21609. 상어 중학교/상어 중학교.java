@@ -24,11 +24,8 @@ public class Main {
         initBoard();
         int score = 0;
 
-        while (true) {
-            Group group = getBestGroupOrNull();
-            if (group == null) {
-                break;
-            }
+        Group group;
+        while((group = getBestGroupOrNull()) != null){
             score += group.getScore();
             removeGroup(group);
             applyGravity();
@@ -94,14 +91,22 @@ public class Main {
 
     static Group getBestGroupOrNull() {
         Group bestGroup = null;
+        
+        boolean[][] visitedNormal = new boolean[N][N];
+        
 
         for (int y = 0; y < N; y++) {
             for (int x = 0; x < N; x++) {
-                // 일반블록 아니거나 그룹이 안만들어지면 넘어감
+                // 1. 일반블록 아니거나 
+                // 2. 이미 어떤 그룹에서 방문한 일반블록이거나
+                // 3. 그룹이 안만들어지면, 넘어감
                 if (board[y][x] <= 0) {
                     continue;
                 }
-                Group g = getGroupOrNull(x, y);
+                if (visitedNormal[y][x]) {
+                    continue;
+                }
+                Group g = getGroupOrNull(x, y, visitedNormal);
                 if (g == null) {
                     continue;
                 }
@@ -114,7 +119,7 @@ public class Main {
         return bestGroup;
     }
 
-    static Group getGroupOrNull(int sx, int sy) {
+    static Group getGroupOrNull(int sx, int sy, boolean[][] visitedNormal) {
         int startColor = board[sy][sx]; // 기준좌표 색
 
         boolean[][] visited = new boolean[N][N];
@@ -126,6 +131,9 @@ public class Main {
 
         List<Block> blockList = new ArrayList<>();
         int rainbowCount = 0;
+        
+        int stdX = N+1;
+        int stdY = N+1;
 
         while (!bfsQueue.isEmpty()) {
             int[] curr = bfsQueue.poll();
@@ -137,6 +145,13 @@ public class Main {
             blockList.add(new Block(cx, cy, currColor)); // 큐에 있던건 검증 된것들이니 poll() 시점에 add
             if (currColor == RAINBOW) {
                 rainbowCount++;
+            } else {
+                visitedNormal[cy][cx] = true; // 일반블록은 방문처리해버림!
+                //더 위, 왼쪽인 일반블록이면 기준블록 갱신
+                if (cy < stdY || (cy == stdY && cx < stdX)) {
+                    stdY = cy;
+                    stdX = cx;
+                }
             }
 
             // (cx,cy) 상하좌우 4방향으로 확장하며 탐색
@@ -163,34 +178,9 @@ public class Main {
             return null;
         }
 
-        Block standardBlock = findStandardBlock(blockList);
+        Block standardBlock = new Block(stdX, stdY, startColor);
 
         return new Group(blockList, rainbowCount, standardBlock);
-    }
-
-    static Block findStandardBlock(List<Block> blockList) {
-        Block standardBlock = null;
-
-        for (Block block : blockList) {
-            if (block.color == RAINBOW) { // 무지개 블록은 기준 블록 안됨
-                continue;
-            }
-            // 맨 처음 블록 하나 잡음 (초기화)
-            if (standardBlock == null) {
-                standardBlock = block;
-                continue;
-            }
-
-            // 1. 행(y)이 더 작은 블록
-            // 2. 행이 같다면, 열(x)이 더 작은 블록
-            if (block.y < standardBlock.y || (block.y == standardBlock.y && block.x < standardBlock.x)) {
-                standardBlock = block;
-            }
-        }
-
-        // 최종적으로 선택된 기준 블록 반환
-        // (이론상 null이면 안 됨: 그룹 시작점은 항상 일반 블록이기 때문)
-        return standardBlock;
     }
 
     static boolean inRange(int x, int y) {
