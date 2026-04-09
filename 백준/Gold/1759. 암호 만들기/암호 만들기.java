@@ -19,6 +19,8 @@ BOJ 1759 - 암호 만들기
 [느낀점]
 변수를 선언할 때 어떤 자료형을 사용할까 성능 관점에서 굉장히 고민을 많이 했다. 
 전형적인 백트래킹 문제였던 것 같다.
+++ I/O 작업은 일반적인 메모리 연산보다 무겁다. 따라서 뭔가 많이 출력해야 할 때는 
+StringBuilder에 모아서 한꺼번에 출력하는 것이 성능상 낫다.
 */
 
 import java.io.*;
@@ -30,10 +32,12 @@ public class Main {
     static int L, C; // L:암호길이, C:사용된문자 수
     static List<Character> password = new ArrayList<>();
     static char[] candidateChars;
+    static StringBuilder sb = new StringBuilder();
     
     public static void main(String[] args) throws IOException {
         init();
         backtrack(-1);
+        System.out.print(sb);
     }
     
     private static void backtrack(int prev){
@@ -45,9 +49,9 @@ public class Main {
         if(password.size() == L){
             if(vowelConsonantRule()){
                 for(char ch: password){
-                    System.out.print(ch);
+                    sb.append(ch);
                 }
-                System.out.println();
+                sb.append('\n');
             }
             return;
         }
