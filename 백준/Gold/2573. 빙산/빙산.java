@@ -67,6 +67,8 @@ public class Main {
         
         for(int r=0; r<R; r++){
             for(int c=0; c<C; c++){
+                if(map[r][c]==0) continue; // 0인칸은 그냥 0이므로 건너뛰자
+                
                 int zeroCount = 0;
                 
                 for(int i=0; i<4; i++){
