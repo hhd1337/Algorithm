@@ -11,6 +11,8 @@ BOJ 1941 - 소문난 칠공주
 -> S가 Y보다 많은지 검사하려면 모든 점 확인 후 S수>Y수 인지 확인해야 하므로 약 8회 연산
 -> 480700 * 15 = 7,210,500 (문제 제한시간 2초: 6000만 연산까지 안전.)
 ==> 이 방식 안전함.
+++ S>Y검사를 먼저하는 것이 훨씬 효율적인듯.
+BFS인접검사는 함수를 짜놓고 나니, 메모리적으로도, 연산 수로도 S>Y검사보다 무거움.
 
 [느낀점]
 1) 순서 상관없이, 2차원 자리 25개 중 7개를 중복없이 뽑는 방법을 확실히 익혔다. 
@@ -71,7 +73,7 @@ public class Main {
     static void select7(int depth, int start) {
         //종료조건
         if (depth == 7) {
-            if(is7Connected() && hasMoreS()){
+            if(hasMoreS() && is7Connected()){
                 sevenPrincessCount++;
             }
             return;
