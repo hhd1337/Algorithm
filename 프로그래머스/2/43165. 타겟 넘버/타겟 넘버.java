@@ -16,7 +16,13 @@ PGS 43165 - 타겟넘버
 ==> 백트래킹
 
 [느낀점]
-전형적인 백트래킹 문제였던 것 같다.
+1)백트래킹에서 선택지를 자연스럽게 순회하기 위해 for문을 쓰는 것에 익숙하다 보니, 
+int[] multiplyValue = {-1,1}; 를 만들어 for문으로 순회하게 했고, 이 방법은 불필요하게 복잡했다. 
+해결책은 그냥 backtrack() 메서드를 두번 호출하면 되는 것이었다. 
+이번재귀에서, 선택지들을 모두 한번씩 선택해서 다시 트리 리프방향으로 돌려보내주기만 하면 된다는 감을 확실히 익혔다. 
+
+2)또, 현재 인덱스를 건드리지 않고 인자로 +-연산을 통해 계산된 값을 넘긴다면, 
+선택복구를 할 필요도 없다는것을 확실히 익혔다.
 */
 import java.util.*;
  
@@ -25,7 +31,7 @@ class Solution {
     int target;
     int[] numbers;
     int matchCount;
-    int[] multiplyValue = {-1,1};
+    //int[] multiplyValue = {-1,1}; // 레거시 코드
     
     public int solution(int[] numbers, int target) {
         N = numbers.length;
@@ -44,7 +50,11 @@ class Solution {
             if(sum == target) matchCount++;
             return;
         }
+        // 수정한 코드
+        backtrack(sum-numbers[idx], idx+1);
+        backtrack(sum+numbers[idx], idx+1);
         
+        /* 레거시 코드
         for(int i=0; i<=1; i++){
             //선택: 이번 숫자 빼거나 더함
             sum += numbers[idx] * multiplyValue[i];
@@ -55,5 +65,6 @@ class Solution {
             //선택취소
             sum -= numbers[idx] * multiplyValue[i];
         }
+        */
     }
 }
